@@ -48,12 +48,9 @@
 
 extern crate core;
 extern crate mio;
-extern crate collections;
 extern crate iobuf;
 extern crate time;
-extern crate rand;
 extern crate nix;
-extern crate libc;
 extern crate quickcheck;
 
 #[macro_use]
@@ -71,6 +68,9 @@ pub mod net_stream;
 pub mod sendable;
 pub mod mmap_allocator;
 pub mod scheduler;
+pub mod observable;
+pub mod observer;
+pub mod disposable;
 #[macro_use]
 pub mod protocol;
 mod processorimpl;
@@ -100,14 +100,14 @@ fn main() {
     use std::thread::Thread;
     let (dtx, drx) = channel();
 
-    let out = move |:| {
+    let out = move || {
         let sub = Box::new(StdoutSubscriber::new());
         let mut rec = Box::new(Coupler::new(drx));
         rec.subscribe(sub);
     };
 
-    let gen = move |:| {
-        let it = range(0is, 20is);
+    let gen = move || {
+        let it = range(0isize, 20isize);
         let q   = Box::new(Decoupler::new(dtx.clone()));
         let mut map1 = Box::new(Map::new(|i : isize| {i * 10}));
         let mut map2 = Box::new(Map::new(|i : isize| {i + 2}));
@@ -126,7 +126,7 @@ fn main() {
     timer.sleep(Duration::milliseconds(1000));
 
     Thread::spawn(|| {
-        let it = range(0is, 20is);
+        let it = range(0isize, 20isize);
         let sub = Box::new(StdoutSubscriber::new());
         let mut map1 = Box::new(Map::new(|i : isize| {i * 10}));
         let mut map2 = Box::new(Map::new(|i : isize| {i + 2}));

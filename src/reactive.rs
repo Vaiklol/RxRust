@@ -9,7 +9,7 @@ pub trait Subscriber {
     type Input;
 
     fn on_next(&mut self, t: Self::Input) -> bool;
-    fn on_subscribe(&mut self, usize) {
+    fn on_subscribe(&mut self, _ :usize) {
         debug!("on_subscribe called");
     }
     fn on_error(&mut self, err: &str) {
@@ -23,7 +23,7 @@ pub trait Subscriber {
 pub trait Publisher<'a> {
     type Output;
 
-    fn subscribe(&mut self, Box<Subscriber<Input=Self::Output> + 'a>);
+    fn subscribe(&mut self, _: Box<Subscriber<Input=Self::Output> + 'a>);
 
     /// The basic message event generation function
     /// this is typically called in a loop

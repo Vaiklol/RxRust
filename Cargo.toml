@@ -1,11 +1,12 @@
 [package]
 
 name = "rx"
+edition = "2018"
 version = "0.0.2"
 authors = ["Rick Richardson <rick.richardson@gmail.com>"]
 
 [dependencies]
-log="*"
+log = "0.4.6"
 time="*"
 quickcheck="*"
 regex="*"

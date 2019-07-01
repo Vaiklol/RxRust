@@ -6,7 +6,7 @@ pub trait Protocol {
 
     fn new() -> Self;
 
-    fn append(&mut self, &AROIobuf) -> Option<(Self::Output, AROIobuf, u32)>;
+    fn append(&mut self, _: &AROIobuf) -> Option<(Self::Output, AROIobuf, u32)>;
 }
 
 pub trait HasSize{ fn size() -> u32; }
