@@ -1,1 +1,3 @@
-pub mod observer;
+mod observer;
+
+pub use observer::Observer;

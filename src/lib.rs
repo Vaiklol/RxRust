@@ -33,113 +33,18 @@
 //! ```rust
 //! ```
 #![doc(html_root_url = "http://www.rust-ci.org/rrichardson/reactive/doc/reactive/")]
-#![unstable]
 #![crate_id = "rx"]
 #![crate_type="lib"]
 
-#![allow(unstable)]
-#![feature(slicing_syntax)]
-#![feature(unboxed_closures)]
-#![feature(unsafe_destructor)]
-#![feature(libc)]
-#![feature(core)]
-#![feature(io)]
-#![feature(collections)]
-
-extern crate core;
-extern crate mio;
-extern crate iobuf;
-extern crate time;
-extern crate nix;
-extern crate quickcheck;
-
 #[macro_use]
-extern crate log;
+mod default_macros;
+mod observable;
+mod observer;
+mod disposable;
+mod errors;
 
-#[macro_use]
-extern crate lazy_static;
-
-#[macro_use]
-pub mod default_macros;
-pub mod subscriber;
-pub mod reactive;
-pub mod reactor;
-pub mod net_stream;
-pub mod sendable;
-pub mod mmap_allocator;
-pub mod scheduler;
-pub mod observable;
-pub mod observer;
-pub mod disposable;
-#[macro_use]
-pub mod protocol;
-mod processorimpl;
-mod publisherimpl;
-mod processorext;
-mod publisherext;
-
-pub mod publisher {
-    pub use publisherimpl::*;
-    pub use publisherext::*;
-}
-
-pub mod processor {
-    pub use processorimpl::*;
-    pub use processorext::*;
-}
-
-#[test]
-fn main() {
-    use publisher::{IterPublisher, Coupler};
-    use processor::{Map};
-    use subscriber::{StdoutSubscriber, Decoupler};
-    use reactive::{Publisher, Subscriber};
-    use std::old_io::Timer;
-    use std::time::Duration;
-    use std::sync::mpsc::{channel};
-    use std::thread::Thread;
-    let (dtx, drx) = channel();
-
-    let out = move || {
-        let sub = Box::new(StdoutSubscriber::new());
-        let mut rec = Box::new(Coupler::new(drx));
-        rec.subscribe(sub);
-    };
-
-    let gen = move || {
-        let it = range(0isize, 20isize);
-        let q   = Box::new(Decoupler::new(dtx.clone()));
-        let mut map1 = Box::new(Map::new(|i : isize| {i * 10}));
-        let mut map2 = Box::new(Map::new(|i : isize| {i + 2}));
-        let mut iter = Box::new(IterPublisher::new(it));
-
-
-        map2.subscribe(q);
-        map1.subscribe(map2);
-        iter.subscribe(map1);
-    };
-
-    Thread::spawn(out);
-    Thread::spawn(gen);
-
-    let mut timer = Timer::new().unwrap();
-    timer.sleep(Duration::milliseconds(1000));
-
-    Thread::spawn(|| {
-        let it = range(0isize, 20isize);
-        let sub = Box::new(StdoutSubscriber::new());
-        let mut map1 = Box::new(Map::new(|i : isize| {i * 10}));
-        let mut map2 = Box::new(Map::new(|i : isize| {i + 2}));
-        let mut iter = Box::new(IterPublisher::new(it));
-
-
-        map2.subscribe(sub);
-        map1.subscribe(map2);
-        iter.subscribe(map1);
-
-    });
-
-
-    timer.sleep(Duration::milliseconds(1000));
-
+pub mod reactive {
+    pub use crate::observer::Observer;
+    pub use crate::observable::{Single, ObservableSource};
+    pub use crate::observable::{ObservableFrom};
 }
