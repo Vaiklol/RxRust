@@ -44,7 +44,7 @@ mod observer;
 mod disposable;
 
 pub mod reactive {
-//    pub use crate::observable::{ObservableSource, ResultObservable, ObservableEmitter};
-//    pub use crate::observer::Observer;
-//    pub use crate::observer::{ResultObserver, OptionObserver};
+    pub use crate::observable::{ObservableSource};
+    pub use crate::observer::Observer;
+    pub use crate::observer::{ResultObserver};
 }
