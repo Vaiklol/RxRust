@@ -34,17 +34,17 @@
 //! ```
 #![doc(html_root_url = "http://www.rust-ci.org/rrichardson/reactive/doc/reactive/")]
 #![crate_id = "rx"]
-#![crate_type="lib"]
+#![crate_type = "lib"]
 
 #[macro_use]
 mod default_macros;
 mod observable;
+#[macro_use]
 mod observer;
 mod disposable;
-mod errors;
 
 pub mod reactive {
-    pub use crate::observer::Observer;
-    pub use crate::observable::{Single, ObservableSource};
-    pub use crate::observable::{ObservableFrom};
+//    pub use crate::observable::{ObservableSource, ResultObservable, ObservableEmitter};
+//    pub use crate::observer::Observer;
+//    pub use crate::observer::{ResultObserver, OptionObserver};
 }

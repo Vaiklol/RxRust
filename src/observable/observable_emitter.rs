@@ -1,3 +1,3 @@
 pub trait ObservableEmitter<S> {
-    fn next(&self, next: S);
+    fn next(&mut self, next: S);
 }
