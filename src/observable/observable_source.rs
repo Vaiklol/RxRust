@@ -1,17 +1,19 @@
 use crate::observer::Observer;
 use crate::reactive::ResultObserver;
 
-pub trait ObservableSource<T, P>: Sized {
-
-    fn subscribe<F>(self, subscriber: impl Observer<T, P, F, Next=T>) where F: FnOnce(T);
+pub trait ObservableSource<T, P, F, E>: Sized
+    where F: FnOnce(T),
+          E: FnOnce(P) {
+    fn subscribe(self, subscriber: impl Observer<T, P, F, E>);
 }
 
-impl<T, P> ObservableSource<T, P> for Result<T, P> {
-
-    fn subscribe<F>(self, subscriber: impl Observer<T, P, F, Next=T>) where F: FnOnce(T) {
+impl<T, P, F, E> ObservableSource<T, P, F, E> for Result<T, P>
+    where F: FnOnce(T),
+          E: FnOnce(P) {
+    fn subscribe(self, subscriber: impl Observer<T, P, F, E>) {
         match self {
-            Ok(n) => subscriber.next(n),
-            Err(e) => subscriber.error(e)
+            Ok(next) => subscriber.next(next),
+            Err(error) => subscriber.error(error),
         }
     }
 }

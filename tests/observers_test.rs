@@ -16,10 +16,16 @@ mod observers_test {
     fn should_observer_from_result_error() {
         let ok: Result<u32, String> = Err("error".to_owned());
         let mut is_called = false;
-        ok.subscribe(ResultObserver {
+        ok.subscribe(&mut ResultObserver {
             next: |n| (),
             error: |_| is_called = true
         });
         assert!(is_called);
+    }
+
+    #[test]
+    fn should_use_observable_from_result() {
+        let ok: Result<u32, String> = Err("error".to_owned());
+
     }
 }

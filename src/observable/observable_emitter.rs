@@ -1,4 +1,3 @@
-pub trait ObservableEmitter<S, F>
-    where F: FnOnce(S) {
-    fn next(&mut self, next: S);
+pub trait ObservableEmitter<R, T, P> {
+    fn next(&mut self, next: R);
 }
