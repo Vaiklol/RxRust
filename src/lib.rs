@@ -42,9 +42,11 @@ mod observable;
 #[macro_use]
 mod observer;
 mod disposable;
+mod operators;
 
 pub mod reactive {
-    pub use crate::observable::{ObservableSource, };
-    pub use crate::observer::Observer;
+    pub use crate::observable::{ObservableSource, ResultSource, ObservableResult, ObservableEmitter};
+    pub use crate::observer::{Observer,};
     pub use crate::observer::{ResultObserver};
+    pub use crate::operators::ObservableMap;
 }

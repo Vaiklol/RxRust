@@ -1,24 +1,33 @@
 use crate::observable::observable_emitter::ObservableEmitter;
-use crate::observer::ResultObserver;
+use crate::observer::{Observer, RefObserver, MutRefObserver};
 use crate::observable::observable_source::ObservableSource;
-use crate::reactive::Observer;
+use crate::observable::observable_source::ResultSource;
 
 pub struct ObservableResult<T, P> {
     consumed: Vec<Result<T, P>>,
 }
 
-impl<T, P> ObservableEmitter<Result<T, P>, T, P> for ObservableResult<T, P> {
-    fn next(&mut self, next: Result<T, P>) {
-        self.consumed.push(next)
+impl<T, P> ObservableResult<T, P> {
+
+    pub fn new() -> ObservableResult<T, P> {
+        ObservableResult {
+            consumed: Vec::new(),
+        }
     }
 }
 
-//impl<T, P, F, E> ObservableSource<T, P, F, E> for ObservableResult<T, P>
-//    where F: FnOnce(T),
-//          E: FnOnce(P) {
-//    fn subscribe(self, subscriber: impl Observer<T, P, F, E>) {
-//        self.consumed.into_iter().for_each(|next| {
-//            next.subscribe(&subscriber)
-//        })
-//    }
-//}
+impl<T, P> ObservableEmitter<Result<T, P>, T, P> for ObservableResult<T, P> {
+    fn next(&mut self, next: Result<T, P>) {
+        self.consumed.push(next);
+    }
+}
+
+impl<T, P, F, E> ObservableSource<T, P, F, E> for ObservableResult<T, P>
+    where F: FnMut(T),
+          E: FnMut(P) {
+    fn subscribe<O>(self, mut subscriber: O) where O: MutRefObserver<T, P, F, E> {
+        for result in self.consumed.into_iter() {
+            result.subscribe(&mut subscriber)
+        }
+    }
+}
