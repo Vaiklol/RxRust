@@ -1,4 +1,5 @@
 mod observer;
+mod subscriber;
 
-pub use observer::{Observer, RefObserver, MutRefObserver};
-pub use observer::ResultObserver;
+pub use self::observer::{Observer, RefObserver, MutRefObserver,};
+pub use self::subscriber::Subscriber;
