@@ -1,31 +1,26 @@
 use crate::disposable::Disposable;
 
-pub trait Observer<T, P,> {
+pub trait Observer<T, P>{
     fn next(self, _: T);
     fn error(self, _: P);
 }
 
-pub trait MutRefObserver<T, P, F, E>: Observer<T, P, F, E>
-    where F: FnMut(T),
-          E: FnMut(P) {
+pub trait MutRefObserver<T, P> {
     fn next_mut(&mut self, _: T);
     fn error_mut(&mut self, _: P);
 }
 
-pub trait RefObserver<T, P, F, E>: MutRefObserver<T, P, F, E>
-    where F: Fn(T),
-          E: Fn(P) {
+pub trait RefObserver<T, P> {
     fn next_ref(&self, _: T);
     fn error_ref(&self, _: P);
 }
 
+
 mod impls {
     use super::*;
 
-    impl<T, P, F, E, O> RefObserver<T, P, F, E> for &O
-        where F: Fn(T),
-              E: Fn(P),
-              O: RefObserver<T, P, F, E> {
+    impl<T, P, O> RefObserver<T, P> for &O
+        where O: RefObserver<T, P> {
         fn next_ref(&self, next: T) {
             (**self).next_ref(next)
         }
@@ -35,10 +30,8 @@ mod impls {
         }
     }
 
-    impl<T, P, F, E, O> MutRefObserver<T, P, F, E> for &O
-        where F: Fn(T),
-              E: Fn(P),
-              O: RefObserver<T, P, F, E> {
+    impl<T, P, O> MutRefObserver<T, P> for &O
+        where O: RefObserver<T, P> {
         fn next_mut(&mut self, next: T) {
             (**self).next_ref(next)
         }
@@ -48,10 +41,8 @@ mod impls {
         }
     }
 
-    impl<T, P, F, E, O> Observer<T, P, F, E> for &O
-        where F: Fn(T),
-              E: Fn(P),
-              O: RefObserver<T, P, F, E> {
+    impl<T, P, O> Observer<T, P> for &O
+        where O: RefObserver<T, P> {
         fn next(self, next: T) {
             (*self).next_ref(next)
         }
@@ -61,10 +52,8 @@ mod impls {
         }
     }
 
-    impl<T, P, F, E, O> MutRefObserver<T, P, F, E> for &mut O
-        where F: FnMut(T),
-              E: FnMut(P),
-              O: MutRefObserver<T, P, F, E> {
+    impl<T, P, O> MutRefObserver<T, P> for &mut O
+        where O: MutRefObserver<T, P> {
         fn next_mut(&mut self, next: T) {
             (*self).next_mut(next)
         }
@@ -74,10 +63,8 @@ mod impls {
         }
     }
 
-    impl<T, P, F, E, O> Observer<T, P, F, E> for &mut O
-        where F: FnMut(T),
-              E: FnMut(P),
-              O: MutRefObserver<T, P, F, E> {
+    impl<T, P, O> Observer<T, P> for &mut O
+        where O: MutRefObserver<T, P> {
         fn next(self, next: T) {
             (*self).next_mut(next)
         }
