@@ -1,6 +1,6 @@
 use crate::disposable::Disposable;
 
-pub trait Observer<T, P>{
+pub trait Observer<T, P> {
     fn next(self, _: T);
     fn error(self, _: P);
 }

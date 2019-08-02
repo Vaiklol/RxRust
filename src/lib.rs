@@ -45,7 +45,7 @@ mod disposable;
 mod operators;
 
 pub mod reactive {
-    pub use crate::observable::{MutSource, OnceSource, ObservableResult, ObservableEmitter};
-    pub use crate::observer::{Observer, Subscriber, MutRefObserver, RefObserver,};
+    pub use crate::observable::{MutSource, OnceSource, Observables, ObservableEmitter};
+    pub use crate::observer::{Observer, Subscriber, MutRefObserver, RefObserver};
     pub use crate::operators::ObservableMap;
 }
